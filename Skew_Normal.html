@@ -228,31 +228,399 @@ integrate(fx, -Inf, Inf)$value # Check if pdf, YES</code></pre>
 <pre><code>[1] 0.04998491</code></pre>
 <pre class="r"><code>(sn &lt;- 1-psn(1.645, alpha = 0.01)) # Skew Normal</code></pre>
 <pre><code>[1] 0.05080755</code></pre>
-<pre class="r"><code>(CASN &lt;- integrate(fx, 1.645, pi)$value) #CASN</code></pre>
-<pre><code>[1] 0.04978288</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 1.645, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.0506413</code></pre>
 <pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
-<pre><code>[1] 0.001024665</code></pre>
+<pre><code>[1] 0.0001662432</code></pre>
 <pre class="r"><code>#95%
 (normal &lt;- 1-pnorm(1.96)) # Normal</code></pre>
 <pre><code>[1] 0.0249979</code></pre>
 <pre class="r"><code>(sn &lt;- 1-psn(1.96, alpha = 0.01)) # Skew Normal</code></pre>
 <pre><code>[1] 0.02546414</code></pre>
-<pre class="r"><code>(CASN &lt;- integrate(fx, 1.96, pi)$value) #CASN</code></pre>
-<pre><code>[1] 0.0245115</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 1.96, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.02536992</code></pre>
 <pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
-<pre><code>[1] 0.0009526393</code></pre>
+<pre><code>[1] 0.00009421738</code></pre>
 <pre class="r"><code>#99%
 (normal &lt;- 1-pnorm(2.576)) # Normal</code></pre>
 <pre><code>[1] 0.004997532</code></pre>
 <pre class="r"><code>(sn &lt;- 1-psn(2.576, alpha = 0.01)) # Skew Normal</code></pre>
 <pre><code>[1] 0.005112837</code></pre>
-<pre class="r"><code>(CASN &lt;- integrate(fx, 2.576, pi)$value) #CASN</code></pre>
-<pre><code>[1] 0.004231117</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 2.576, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.005089539</code></pre>
 <pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
-<pre><code>[1] 0.0008817202</code></pre>
+<pre><code>[1] 0.00002329824</code></pre>
 </div>
 <div id="lambda-0.2" class="section level2">
 <h2><span class="math inline">\(\lambda = 0.2\)</span></h2>
+<pre class="r"><code>library(sn)
+
+fx &lt;- function(x){
+  ifelse(x &lt; -pi/0.2, 0,
+   ifelse(x &gt;= -pi/0.2 &amp; x &lt; pi/0.2,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+0.2*x+sin(0.2*x))/(2*pi),
+   ifelse(x &gt;= pi/0.2, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>#90%
+
+(normal &lt;- 1-pnorm(1.645)) # Normal</code></pre>
+<pre><code>[1] 0.04998491</code></pre>
+<pre class="r"><code>(sn &lt;- 1-psn(1.645, alpha = 0.2)) # Skew Normal</code></pre>
+<pre><code>[1] 0.06593946</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 1.645, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.06290971</code></pre>
+<pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
+<pre><code>[1] 0.003029747</code></pre>
+<pre class="r"><code>#95%
+(normal2 &lt;- 1-pnorm(1.96)) # Normal</code></pre>
+<pre><code>[1] 0.0249979</code></pre>
+<pre class="r"><code>(sn2 &lt;- 1-psn(1.96, alpha = 0.2)) # Skew Normal</code></pre>
+<pre><code>[1] 0.03397427</code></pre>
+<pre class="r"><code>(CASN2 &lt;- integrate(fx, 1.96, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.03229582</code></pre>
+<pre class="r"><code>(e2 &lt;- abs(CASN2 - sn2))</code></pre>
+<pre><code>[1] 0.001678452</code></pre>
+<pre class="r"><code>#99%
+(normal3 &lt;- 1-pnorm(2.576)) # Normal</code></pre>
+<pre><code>[1] 0.004997532</code></pre>
+<pre class="r"><code>(sn3 &lt;- 1-psn(2.576, alpha = 0.2)) # Skew Normal</code></pre>
+<pre><code>[1] 0.007178101</code></pre>
+<pre class="r"><code>(CASN3 &lt;- integrate(fx, 2.576, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.006785776</code></pre>
+<pre class="r"><code>(e3 &lt;- abs(CASN3 - sn3))</code></pre>
+<pre><code>[1] 0.0003923247</code></pre>
+<pre class="r"><code>one &lt;- round(c(normal, sn, CASN, e), 5)
+two &lt;- round(c(normal2, sn2, CASN2, e2), 5)
+three &lt;- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df &lt;- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c(&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;))</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">One</td>
+<td align="center">0.04998</td>
+<td align="center">0.06594</td>
+<td align="center">0.06291</td>
+<td align="center">0.00303</td>
+</tr>
+<tr class="even">
+<td align="left">Two</td>
+<td align="center">0.02500</td>
+<td align="center">0.03397</td>
+<td align="center">0.03230</td>
+<td align="center">0.00168</td>
+</tr>
+<tr class="odd">
+<td align="left">Three</td>
+<td align="center">0.00500</td>
+<td align="center">0.00718</td>
+<td align="center">0.00679</td>
+<td align="center">0.00039</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="lambda-1.0" class="section level2">
+<h2><span class="math inline">\(\lambda = 1.0\)</span></h2>
+<pre class="r"><code>library(sn)
+
+fx &lt;- function(x){
+  ifelse(x &lt; -pi/1, 0,
+   ifelse(x &gt;= -pi/1 &amp; x &lt; pi/1,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+1*x+sin(1*x))/(2*pi),
+   ifelse(x &gt;= pi/1, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>#90%
+
+(normal &lt;- 1-pnorm(1.645)) # Normal</code></pre>
+<pre><code>[1] 0.04998491</code></pre>
+<pre class="r"><code>(sn &lt;- 1-psn(1.645, alpha = 1)) # Skew Normal</code></pre>
+<pre><code>[1] 0.09747132</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 1.645, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.09600211</code></pre>
+<pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
+<pre><code>[1] 0.001469206</code></pre>
+<pre class="r"><code>#95%
+(normal2 &lt;- 1-pnorm(1.96)) # Normal</code></pre>
+<pre><code>[1] 0.0249979</code></pre>
+<pre class="r"><code>(sn2 &lt;- 1-psn(1.96, alpha = 1)) # Skew Normal</code></pre>
+<pre><code>[1] 0.0493709</code></pre>
+<pre class="r"><code>(CASN2 &lt;- integrate(fx, 1.96, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.04906046</code></pre>
+<pre class="r"><code>(e2 &lt;- abs(CASN2 - sn2))</code></pre>
+<pre><code>[1] 0.000310438</code></pre>
+<pre class="r"><code>#99%
+(normal3 &lt;- 1-pnorm(2.576)) # Normal</code></pre>
+<pre><code>[1] 0.004997532</code></pre>
+<pre class="r"><code>(sn3 &lt;- 1-psn(2.576, alpha = 1)) # Skew Normal</code></pre>
+<pre><code>[1] 0.009970089</code></pre>
+<pre class="r"><code>(CASN3 &lt;- integrate(fx, 2.576, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.009980305</code></pre>
+<pre class="r"><code>(e3 &lt;- abs(CASN3 - sn3))</code></pre>
+<pre><code>[1] 0.00001021523</code></pre>
+<pre class="r"><code>one &lt;- round(c(normal, sn, CASN, e), 5)
+two &lt;- round(c(normal2, sn2, CASN2, e2), 5)
+three &lt;- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df &lt;- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c(&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;))</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">One</td>
+<td align="center">0.04998</td>
+<td align="center">0.09747</td>
+<td align="center">0.09600</td>
+<td align="center">0.00147</td>
+</tr>
+<tr class="even">
+<td align="left">Two</td>
+<td align="center">0.02500</td>
+<td align="center">0.04937</td>
+<td align="center">0.04906</td>
+<td align="center">0.00031</td>
+</tr>
+<tr class="odd">
+<td align="left">Three</td>
+<td align="center">0.00500</td>
+<td align="center">0.00997</td>
+<td align="center">0.00998</td>
+<td align="center">0.00001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="lambda-2.0" class="section level2">
+<h2><span class="math inline">\(\lambda = 2.0\)</span></h2>
+<pre class="r"><code>library(sn)
+
+fx &lt;- function(x){
+  ifelse(x &lt; -pi/2, 0,
+   ifelse(x &gt;= -pi/2 &amp; x &lt; pi/2,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+2*x+sin(2*x))/(2*pi),
+   ifelse(x &gt;= pi/2, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>#90%
+
+(normal &lt;- 1-pnorm(1.645)) # Normal</code></pre>
+<pre><code>[1] 0.04998491</code></pre>
+<pre class="r"><code>(sn &lt;- 1-psn(1.645, alpha = 2)) # Skew Normal</code></pre>
+<pre><code>[1] 0.09995864</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 1.645, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.09996981</code></pre>
+<pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
+<pre><code>[1] 0.00001117442</code></pre>
+<pre class="r"><code>#95%
+(normal2 &lt;- 1-pnorm(1.96)) # Normal</code></pre>
+<pre><code>[1] 0.0249979</code></pre>
+<pre class="r"><code>(sn2 &lt;- 1-psn(1.96, alpha = 2)) # Skew Normal</code></pre>
+<pre><code>[1] 0.04999531</code></pre>
+<pre class="r"><code>(CASN2 &lt;- integrate(fx, 1.96, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.04999579</code></pre>
+<pre class="r"><code>(e2 &lt;- abs(CASN2 - sn2))</code></pre>
+<pre><code>[1] 0.0000004839677</code></pre>
+<pre class="r"><code>#99%
+(normal3 &lt;- 1-pnorm(2.576)) # Normal</code></pre>
+<pre><code>[1] 0.004997532</code></pre>
+<pre class="r"><code>(sn3 &lt;- 1-psn(2.576, alpha = 2)) # Skew Normal</code></pre>
+<pre><code>[1] 0.009995064</code></pre>
+<pre class="r"><code>(CASN3 &lt;- integrate(fx, 2.576, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.009995065</code></pre>
+<pre class="r"><code>(e3 &lt;- abs(CASN3 - sn3))</code></pre>
+<pre><code>[1] 0.0000000002920022</code></pre>
+<pre class="r"><code>one &lt;- round(c(normal, sn, CASN, e), 5)
+two &lt;- round(c(normal2, sn2, CASN2, e2), 5)
+three &lt;- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df &lt;- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c(&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;))</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">One</td>
+<td align="center">0.04998</td>
+<td align="center">0.09996</td>
+<td align="center">0.09997</td>
+<td align="center">0.00001</td>
+</tr>
+<tr class="even">
+<td align="left">Two</td>
+<td align="center">0.02500</td>
+<td align="center">0.05000</td>
+<td align="center">0.05000</td>
+<td align="center">0.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">Three</td>
+<td align="center">0.00500</td>
+<td align="center">0.01000</td>
+<td align="center">0.01000</td>
+<td align="center">0.00000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="lambda-10.0" class="section level2">
+<h2><span class="math inline">\(\lambda = 10.0\)</span></h2>
+<pre class="r"><code>library(sn)
+
+fx &lt;- function(x){
+  ifelse(x &lt; -pi/10, 0,
+   ifelse(x &gt;= -pi/10 &amp; x &lt; pi/10,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+10*x+sin(10*x))/(2*pi),
+   ifelse(x &gt;= pi/10, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>#90%
+
+(normal &lt;- 1-pnorm(1.645)) # Normal</code></pre>
+<pre><code>[1] 0.04998491</code></pre>
+<pre class="r"><code>(sn &lt;- 1-psn(1.645, alpha = 10)) # Skew Normal</code></pre>
+<pre><code>[1] 0.09996981</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 1.645, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.09996981</code></pre>
+<pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
+<pre><code>[1] 0.00000000000001257328</code></pre>
+<pre class="r"><code>#95%
+(normal2 &lt;- 1-pnorm(1.96)) # Normal</code></pre>
+<pre><code>[1] 0.0249979</code></pre>
+<pre class="r"><code>(sn2 &lt;- 1-psn(1.96, alpha = 10)) # Skew Normal</code></pre>
+<pre><code>[1] 0.04999579</code></pre>
+<pre class="r"><code>(CASN2 &lt;- integrate(fx, 1.96, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.04999579</code></pre>
+<pre class="r"><code>(e2 &lt;- abs(CASN2 - sn2))</code></pre>
+<pre><code>[1] 0.00000000001747887</code></pre>
+<pre class="r"><code>#99%
+(normal3 &lt;- 1-pnorm(2.576)) # Normal</code></pre>
+<pre><code>[1] 0.004997532</code></pre>
+<pre class="r"><code>(sn3 &lt;- 1-psn(2.576, alpha = 10)) # Skew Normal</code></pre>
+<pre><code>[1] 0.009995065</code></pre>
+<pre class="r"><code>(CASN3 &lt;- integrate(fx, 2.576, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.009995065</code></pre>
+<pre class="r"><code>(e3 &lt;- abs(CASN3 - sn3))</code></pre>
+<pre><code>[1] 0.00000000001798105</code></pre>
+<pre class="r"><code>one &lt;- round(c(normal, sn, CASN, e), 5)
+two &lt;- round(c(normal2, sn2, CASN2, e2), 5)
+three &lt;- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df &lt;- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c(&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;))</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">One</td>
+<td align="center">0.04998</td>
+<td align="center">0.09997</td>
+<td align="center">0.09997</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">Two</td>
+<td align="center">0.02500</td>
+<td align="center">0.05000</td>
+<td align="center">0.05000</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Three</td>
+<td align="center">0.00500</td>
+<td align="center">0.01000</td>
+<td align="center">0.01000</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="lambda-50.0" class="section level2">
+<h2><span class="math inline">\(\lambda = 50.0\)</span></h2>
+<pre class="r"><code>library(sn)
+
+fx &lt;- function(x){
+  ifelse(x &lt; -pi/50, 0,
+   ifelse(x &gt;= -pi/50 &amp; x &lt; pi/50,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+50*x+sin(50*x))/(2*pi),
+   ifelse(x &gt;= pi/50, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>#90%
+
+(normal &lt;- 1-pnorm(1.645)) # Normal</code></pre>
+<pre><code>[1] 0.04998491</code></pre>
+<pre class="r"><code>(sn &lt;- 1-psn(1.645, alpha = 50)) # Skew Normal</code></pre>
+<pre><code>[1] 0.09996981</code></pre>
+<pre class="r"><code>(CASN &lt;- integrate(fx, 1.645, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.09996981</code></pre>
+<pre class="r"><code>(e &lt;- abs(CASN - sn))</code></pre>
+<pre><code>[1] 0.00000000000001257328</code></pre>
+<pre class="r"><code>#95%
+(normal2 &lt;- 1-pnorm(1.96)) # Normal</code></pre>
+<pre><code>[1] 0.0249979</code></pre>
+<pre class="r"><code>(sn2 &lt;- 1-psn(1.96, alpha = 50)) # Skew Normal</code></pre>
+<pre><code>[1] 0.04999579</code></pre>
+<pre class="r"><code>(CASN2 &lt;- integrate(fx, 1.96, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.04999579</code></pre>
+<pre class="r"><code>(e2 &lt;- abs(CASN2 - sn2))</code></pre>
+<pre><code>[1] 0.00000000001747887</code></pre>
+<pre class="r"><code>#99%
+(normal3 &lt;- 1-pnorm(2.576)) # Normal</code></pre>
+<pre><code>[1] 0.004997532</code></pre>
+<pre class="r"><code>(sn3 &lt;- 1-psn(2.576, alpha = 50)) # Skew Normal</code></pre>
+<pre><code>[1] 0.009995065</code></pre>
+<pre class="r"><code>(CASN3 &lt;- integrate(fx, 2.576, Inf)$value) #CASN</code></pre>
+<pre><code>[1] 0.009995065</code></pre>
+<pre class="r"><code>(e3 &lt;- abs(CASN3 - sn3))</code></pre>
+<pre><code>[1] 0.00000000001798105</code></pre>
+<pre class="r"><code>one &lt;- round(c(normal, sn, CASN, e), 5)
+two &lt;- round(c(normal2, sn2, CASN2, e2), 5)
+three &lt;- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df &lt;- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c(&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;,&quot;c&quot;))</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">One</td>
+<td align="center">0.04998</td>
+<td align="center">0.09997</td>
+<td align="center">0.09997</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="left">Two</td>
+<td align="center">0.02500</td>
+<td align="center">0.05000</td>
+<td align="center">0.05000</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Three</td>
+<td align="center">0.00500</td>
+<td align="center">0.01000</td>
+<td align="center">0.01000</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

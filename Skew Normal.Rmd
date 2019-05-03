@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = TRUE, comment = NA,
                       fig.align = "center", fig.width = 4, 
                       fig.height = 3)
 R <- 2 # set rounding to two decimal places
+
+options(scipen = 999)
 ```
 
 ## Example
@@ -49,21 +51,21 @@ integrate(fx, -Inf, Inf)$value # Check if pdf, YES
 
 (normal <- 1-pnorm(1.645)) # Normal
 (sn <- 1-psn(1.645, alpha = 0.01)) # Skew Normal
-(CASN <- integrate(fx, 1.645, pi)$value) #CASN
+(CASN <- integrate(fx, 1.645, Inf)$value) #CASN
 
 (e <- abs(CASN - sn))
 
 #95%
 (normal <- 1-pnorm(1.96)) # Normal
 (sn <- 1-psn(1.96, alpha = 0.01)) # Skew Normal
-(CASN <- integrate(fx, 1.96, pi)$value) #CASN
+(CASN <- integrate(fx, 1.96, Inf)$value) #CASN
 
 (e <- abs(CASN - sn))
 
 #99%
 (normal <- 1-pnorm(2.576)) # Normal
 (sn <- 1-psn(2.576, alpha = 0.01)) # Skew Normal
-(CASN <- integrate(fx, 2.576, pi)$value) #CASN
+(CASN <- integrate(fx, 2.576, Inf)$value) #CASN
 
 (e <- abs(CASN - sn))
 ```
@@ -73,3 +75,234 @@ integrate(fx, -Inf, Inf)$value # Check if pdf, YES
 
 ## $\lambda = 0.2$
 
+
+```{r}
+
+library(sn)
+
+fx <- function(x){
+  ifelse(x < -pi/0.2, 0,
+   ifelse(x >= -pi/0.2 & x < pi/0.2,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+0.2*x+sin(0.2*x))/(2*pi),
+   ifelse(x >= pi/0.2, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES
+
+#90%
+
+(normal <- 1-pnorm(1.645)) # Normal
+(sn <- 1-psn(1.645, alpha = 0.2)) # Skew Normal
+(CASN <- integrate(fx, 1.645, Inf)$value) #CASN
+
+(e <- abs(CASN - sn))
+
+#95%
+(normal2 <- 1-pnorm(1.96)) # Normal
+(sn2 <- 1-psn(1.96, alpha = 0.2)) # Skew Normal
+(CASN2 <- integrate(fx, 1.96, Inf)$value) #CASN
+
+(e2 <- abs(CASN2 - sn2))
+
+#99%
+(normal3 <- 1-pnorm(2.576)) # Normal
+(sn3 <- 1-psn(2.576, alpha = 0.2)) # Skew Normal
+(CASN3 <- integrate(fx, 2.576, Inf)$value) #CASN
+
+(e3 <- abs(CASN3 - sn3))
+
+one <- round(c(normal, sn, CASN, e), 5)
+two <- round(c(normal2, sn2, CASN2, e2), 5)
+three <- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df <- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c("c","c","c","c","c","c"))
+```
+
+## $\lambda = 1.0$
+
+```{r}
+
+library(sn)
+
+fx <- function(x){
+  ifelse(x < -pi/1, 0,
+   ifelse(x >= -pi/1 & x < pi/1,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+1*x+sin(1*x))/(2*pi),
+   ifelse(x >= pi/1, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES
+
+#90%
+
+(normal <- 1-pnorm(1.645)) # Normal
+(sn <- 1-psn(1.645, alpha = 1)) # Skew Normal
+(CASN <- integrate(fx, 1.645, Inf)$value) #CASN
+
+(e <- abs(CASN - sn))
+
+#95%
+(normal2 <- 1-pnorm(1.96)) # Normal
+(sn2 <- 1-psn(1.96, alpha = 1)) # Skew Normal
+(CASN2 <- integrate(fx, 1.96, Inf)$value) #CASN
+
+(e2 <- abs(CASN2 - sn2))
+
+#99%
+(normal3 <- 1-pnorm(2.576)) # Normal
+(sn3 <- 1-psn(2.576, alpha = 1)) # Skew Normal
+(CASN3 <- integrate(fx, 2.576, Inf)$value) #CASN
+
+(e3 <- abs(CASN3 - sn3))
+
+one <- round(c(normal, sn, CASN, e), 5)
+two <- round(c(normal2, sn2, CASN2, e2), 5)
+three <- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df <- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c("c","c","c","c","c","c"))
+```
+
+
+## $\lambda = 2.0$
+
+```{r}
+
+library(sn)
+
+fx <- function(x){
+  ifelse(x < -pi/2, 0,
+   ifelse(x >= -pi/2 & x < pi/2,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+2*x+sin(2*x))/(2*pi),
+   ifelse(x >= pi/2, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES
+
+#90%
+
+(normal <- 1-pnorm(1.645)) # Normal
+(sn <- 1-psn(1.645, alpha = 2)) # Skew Normal
+(CASN <- integrate(fx, 1.645, Inf)$value) #CASN
+
+(e <- abs(CASN - sn))
+
+#95%
+(normal2 <- 1-pnorm(1.96)) # Normal
+(sn2 <- 1-psn(1.96, alpha = 2)) # Skew Normal
+(CASN2 <- integrate(fx, 1.96, Inf)$value) #CASN
+
+(e2 <- abs(CASN2 - sn2))
+
+#99%
+(normal3 <- 1-pnorm(2.576)) # Normal
+(sn3 <- 1-psn(2.576, alpha = 2)) # Skew Normal
+(CASN3 <- integrate(fx, 2.576, Inf)$value) #CASN
+
+(e3 <- abs(CASN3 - sn3))
+
+one <- round(c(normal, sn, CASN, e), 5)
+two <- round(c(normal2, sn2, CASN2, e2), 5)
+three <- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df <- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c("c","c","c","c","c","c"))
+```
+
+## $\lambda = 10.0$
+
+```{r}
+
+library(sn)
+
+fx <- function(x){
+  ifelse(x < -pi/10, 0,
+   ifelse(x >= -pi/10 & x < pi/10,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+10*x+sin(10*x))/(2*pi),
+   ifelse(x >= pi/10, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES
+
+#90%
+
+(normal <- 1-pnorm(1.645)) # Normal
+(sn <- 1-psn(1.645, alpha = 10)) # Skew Normal
+(CASN <- integrate(fx, 1.645, Inf)$value) #CASN
+
+(e <- abs(CASN - sn))
+
+#95%
+(normal2 <- 1-pnorm(1.96)) # Normal
+(sn2 <- 1-psn(1.96, alpha = 10)) # Skew Normal
+(CASN2 <- integrate(fx, 1.96, Inf)$value) #CASN
+
+(e2 <- abs(CASN2 - sn2))
+
+#99%
+(normal3 <- 1-pnorm(2.576)) # Normal
+(sn3 <- 1-psn(2.576, alpha = 10)) # Skew Normal
+(CASN3 <- integrate(fx, 2.576, Inf)$value) #CASN
+
+(e3 <- abs(CASN3 - sn3))
+
+one <- round(c(normal, sn, CASN, e), 5)
+two <- round(c(normal2, sn2, CASN2, e2), 5)
+three <- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df <- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c("c","c","c","c","c","c"))
+```
+
+
+## $\lambda = 50.0$
+
+```{r}
+
+library(sn)
+
+fx <- function(x){
+  ifelse(x < -pi/50, 0,
+   ifelse(x >= -pi/50 & x < pi/50,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+50*x+sin(50*x))/(2*pi),
+   ifelse(x >= pi/50, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES
+
+#90%
+
+(normal <- 1-pnorm(1.645)) # Normal
+(sn <- 1-psn(1.645, alpha = 50)) # Skew Normal
+(CASN <- integrate(fx, 1.645, Inf)$value) #CASN
+
+(e <- abs(CASN - sn))
+
+#95%
+(normal2 <- 1-pnorm(1.96)) # Normal
+(sn2 <- 1-psn(1.96, alpha = 50)) # Skew Normal
+(CASN2 <- integrate(fx, 1.96, Inf)$value) #CASN
+
+(e2 <- abs(CASN2 - sn2))
+
+#99%
+(normal3 <- 1-pnorm(2.576)) # Normal
+(sn3 <- 1-psn(2.576, alpha = 50)) # Skew Normal
+(CASN3 <- integrate(fx, 2.576, Inf)$value) #CASN
+
+(e3 <- abs(CASN3 - sn3))
+
+one <- round(c(normal, sn, CASN, e), 5)
+two <- round(c(normal2, sn2, CASN2, e2), 5)
+three <- round(c(normal3, sn3, CASN3, e3),5)
+
+
+
+df <- data.frame(One = one, Two = two, Three = three)
+knitr::kable(t(df), align = c("c","c","c","c","c","c"))
+```
