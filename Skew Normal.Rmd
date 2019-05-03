@@ -1,0 +1,75 @@
+---
+title: "Skew Normal"
+author: "Hasthika"
+date: "5/2/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, 
+                      message = FALSE, warning = FALSE, 
+                      fig.align = "center", fig.width = 4, 
+                      fig.height = 3)
+R <- 2 # set rounding to two decimal places
+```
+
+## Example
+```{r}
+
+fx <- function(x){
+  ifelse(x < 1, x-1,
+   ifelse(x > 1 & x < 2,  x,
+   ifelse(x > 2, x+1, 0)))
+  }
+
+integrate(fx, -1, 1/5)$value
+
+
+
+
+```
+
+## Now the real work
+
+## $\lambda = 0.01$
+
+```{r}
+
+library(sn)
+
+fx <- function(x){
+  ifelse(x < -pi/0.01, 0,
+   ifelse(x >= -pi/0.01 & x < pi/0.01,  2/sqrt(2*pi)*exp(1)^(-x^2/2)*(pi+0.01*x+sin(0.01*x))/(2*pi),
+   ifelse(x >= pi/0.01, 2/sqrt(2*pi)*exp(1)^(-x^2/2), 0)))
+  }
+
+integrate(fx, -Inf, Inf)$value # Check if pdf, YES
+
+#90%
+
+(normal <- 1-pnorm(1.645)) # Normal
+(sn <- 1-psn(1.645, alpha = 0.01)) # Skew Normal
+(CASN <- integrate(fx, 1.645, pi)$value) #CASN
+
+(e <- abs(CASN - sn))
+
+#95%
+(normal <- 1-pnorm(1.96)) # Normal
+(sn <- 1-psn(1.96, alpha = 0.01)) # Skew Normal
+(CASN <- integrate(fx, 1.96, pi)$value) #CASN
+
+(e <- abs(CASN - sn))
+
+#99%
+(normal <- 1-pnorm(2.576)) # Normal
+(sn <- 1-psn(2.576, alpha = 0.01)) # Skew Normal
+(CASN <- integrate(fx, 2.576, pi)$value) #CASN
+
+(e <- abs(CASN - sn))
+```
+
+
+
+
+## $\lambda = 0.2$
+
